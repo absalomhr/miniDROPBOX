@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import javax.swing.JFileChooser;
 
 /**
  *
@@ -15,13 +16,27 @@ import java.net.Socket;
 public class ServerDB {
 
     // Route where files are going to be stored on the serer side
-    private static String serverRoute = "C:\\Users\\elpat\\Desktop\\TestDBRecieve";
+    JFileChooser jfc = new JFileChooser();
+
+    
+    private static String serverRoute = "";
 
     DataOutputStream dos;
     DataInputStream dis;
     FilePath p;
 
     public ServerDB() {
+        File f = null;
+        jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        if (jfc.isMultiSelectionEnabled()) {
+            jfc.setMultiSelectionEnabled(false);
+        }
+        int r = jfc.showOpenDialog(null);
+        if (r == JFileChooser.APPROVE_OPTION) {
+            f = jfc.getSelectedFile();
+        }
+        serverRoute = f.getAbsolutePath();
+        
         p = new FilePath();
         ServerSocket s;
         Socket cl;
