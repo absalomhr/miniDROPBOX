@@ -76,7 +76,7 @@ public class ClientDB {
                             send(f, f.getParentFile().getName(), f.getName());
                         } else {
                             System.out.println("PARENT: " + parentDirectory + " NAME: " + name);
-                            send(f, parentDirectory + "\\" + name, f.getName());
+                            send(f, parentDirectory + OsUtils.getSlash() + name, f.getName());
                         }
                     } else if (f.isFile()) {
                         System.out.println("\nSENDING FILE RECURSIVE FROM INNER");
@@ -84,8 +84,8 @@ public class ClientDB {
                             System.out.println("EQEMPTY : PARENT: " + f.getParentFile().getName() + " NAME: " + f.getName());
                             send(f, f.getParentFile().getName(), f.getName());
                         } else {
-                            System.out.println("PARENT: " + parentDirectory + "\\" + name + " NAME: " + f.getName());
-                            send(f, parentDirectory + "\\" + name, f.getName());
+                            System.out.println("PARENT: " + parentDirectory + OsUtils.getSlash() + name + " NAME: " + f.getName());
+                            send(f, parentDirectory + OsUtils.getSlash() + name, f.getName());
                         }
                     }
                 }
@@ -143,9 +143,9 @@ public class ClientDB {
                 System.out.println("\nCREATING DIR: " + "NAME: " + name + " PARENT: " + parent);
                 boolean bol = false;
                 if (parent.equals("")) {
-                    bol = new File(clientRoute + "\\" + name).mkdir();
+                    bol = new File(clientRoute + OsUtils.getSlash() + name).mkdir();
                 } else {
-                    bol = new File(clientRoute + "\\" + parent + "\\" + name).mkdir();
+                    bol = new File(clientRoute + OsUtils.getSlash() + parent + OsUtils.getSlash() + name).mkdir();
                 }
                 if (bol) {
                     System.out.println("DIR CREATED: " + name);
@@ -156,11 +156,11 @@ public class ClientDB {
                 System.out.println("\nCREATING FILE: " + "NAME: " + name + " PARENT: " + parent);
 
                 if (parent.equals("")) {
-                    dos = new DataOutputStream((new FileOutputStream(clientRoute + "\\" + name)));
-                    System.out.println("DESTINATARY: " + clientRoute + "\\" + name);
+                    dos = new DataOutputStream((new FileOutputStream(clientRoute + OsUtils.getSlash() + name)));
+                    System.out.println("DESTINATARY: " + clientRoute + OsUtils.getSlash() + name);
                 } else {
-                    dos = new DataOutputStream((new FileOutputStream(clientRoute + "\\" + parent + "\\" + name)));
-                    System.out.println("DESTINATARY: " + clientRoute + "\\" + parent + "\\" + name);
+                    dos = new DataOutputStream((new FileOutputStream(clientRoute + OsUtils.getSlash() + parent + OsUtils.getSlash() + name)));
+                    System.out.println("DESTINATARY: " + clientRoute + OsUtils.getSlash() + parent + OsUtils.getSlash() + name);
                 }
 
                 long r = 0;
