@@ -14,6 +14,8 @@ import javax.swing.JFileChooser;
  * @author elpat
  */
 public class ServerDB {
+ 
+    
 
     // Route where files are going to be stored on the serer side
     JFileChooser jfc = new JFileChooser();
@@ -97,14 +99,15 @@ public class ServerDB {
                 System.out.println("\nCREATING DIR: " + "NAME: " + name + " PARENT: " + parent);
                 boolean bol = false;
                 if (parent.equals("")) {
-                    bol = new File(serverRoute + "\\" + name).mkdir();
                     
-                    p.insert(serverRoute + "\\" + name, "d");
+                    bol = new File(serverRoute + OsUtils.getSlash() + name).mkdir();
+                    
+                    p.insert(serverRoute + OsUtils.getSlash() + name, "d");
                     
                 } else {
-                    bol = new File(serverRoute + "\\" + parent + "\\" + name).mkdir();
+                    bol = new File(serverRoute + OsUtils.getSlash() + parent + OsUtils.getSlash() + name).mkdir();
                     
-                    p.insert(serverRoute + "\\" + name, "d");
+                    p.insert(serverRoute + OsUtils.getSlash() + name, "d");
                     
                 }
                 if (bol) {
@@ -116,17 +119,17 @@ public class ServerDB {
                 System.out.println("\nCREATING FILE: " + "NAME: " + name + " PARENT: " + parent);
 
                 if (parent.equals("")) {
-                    dos = new DataOutputStream((new FileOutputStream(serverRoute + "\\" + name)));
+                    dos = new DataOutputStream((new FileOutputStream(serverRoute + OsUtils.getSlash() + name)));
                     
-                    p.insert(serverRoute + "\\" + name, "f");
+                    p.insert(serverRoute + OsUtils.getSlash() + name, "f");
                     
-                    System.out.println("DESTINATARY: " + serverRoute + "\\" + name);
+                    System.out.println("DESTINATARY: " + serverRoute + OsUtils.getSlash() + name);
                 } else {
-                    dos = new DataOutputStream((new FileOutputStream(serverRoute + "\\" + parent + "\\" + name)));
+                    dos = new DataOutputStream((new FileOutputStream(serverRoute + OsUtils.getSlash() + parent + OsUtils.getSlash() + name)));
                     
-                    p.insert(serverRoute + "\\" + parent + "\\" + name, "f");
+                    p.insert(serverRoute + OsUtils.getSlash() + parent + OsUtils.getSlash() + name, "f");
                     
-                    System.out.println("DESTINATARY: " + serverRoute + "\\" + parent + "\\" + name);
+                    System.out.println("DESTINATARY: " + serverRoute + OsUtils.getSlash() + parent + OsUtils.getSlash() + name);
                 }
 
                 long r = 0;
@@ -173,7 +176,7 @@ public class ServerDB {
                             send(f, f.getParentFile().getName(), f.getName());
                         } else {
                             System.out.println("PARENT: " + parentDirectory + " NAME: " + name);
-                            send(f, parentDirectory + "\\" + name, f.getName());
+                            send(f, parentDirectory + OsUtils.getSlash() + name, f.getName());
                         }
                     } else if (f.isFile()) {
                         System.out.println("\nSENDING FILE RECURSIVE FROM INNER");
@@ -181,8 +184,8 @@ public class ServerDB {
                             System.out.println("EQEMPTY : PARENT: " + f.getParentFile().getName() + " NAME: " + f.getName());
                             send(f, f.getParentFile().getName(), f.getName());
                         } else {
-                            System.out.println("PARENT: " + parentDirectory + "\\" + name + " NAME: " + f.getName());
-                            send(f, parentDirectory + "\\" + name, f.getName());
+                            System.out.println("PARENT: " + parentDirectory + OsUtils.getSlash() + name + " NAME: " + f.getName());
+                            send(f, parentDirectory + OsUtils.getSlash() + name, f.getName());
                         }
                     }
                 }
