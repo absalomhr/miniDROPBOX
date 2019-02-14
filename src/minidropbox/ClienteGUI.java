@@ -7,7 +7,7 @@ import javax.swing.JFileChooser;
  *
  * @author elpat
  */
-public class TestClass {
+public class ClienteGUI {
 
     public static void main(String[] args) {
         JFileChooser jfc = new JFileChooser();
