@@ -4,8 +4,12 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 
 /**
@@ -20,8 +24,10 @@ public class ServerDB {
     private static String serverRoute;
     private DataOutputStream dosToFile;
     private DataInputStream disFromCl;
+    private DataOutputStream dosToCl;
     private FilePath paths; // if clients requeries to see whats stored on the server
     private int clientRequest; // 0 = do nothing, 1 = upload
+    int port;
 
     public ServerDB() {
         // Choosing server directory (for testing test)
@@ -37,13 +43,15 @@ public class ServerDB {
         }
 
         disFromCl = null;
+        dosToCl = null;
         serverRoute = f.getAbsolutePath();
         paths = new FilePath();
         cl = null;
         clientRequest = 0;
+        port = 9999;
 
         try {
-            s = new ServerSocket(9999);
+            s = new ServerSocket(port);
             s.setReuseAddress(true);
         } catch (Exception e) {
             System.err.println("CONSTRUCTOR ERROR:\n");
@@ -59,9 +67,14 @@ public class ServerDB {
                 cl = s.accept();
                 System.out.println("CLIENT FROM: " + cl.getInetAddress() + " PORT: " + cl.getPort());
                 disFromCl = new DataInputStream(cl.getInputStream());
+                // 1 = upload, 2 = download, 3 = show files
                 clientRequest = disFromCl.readInt();
                 if (clientRequest == 1) {
-                    recieveFiles();
+                    receiveFiles();
+                } else if (clientRequest == 3) {
+                    showFiles();
+                } else if (clientRequest == 2) {
+                    sendFiles();
                 }
             }
         } catch (Exception e) {
@@ -70,7 +83,7 @@ public class ServerDB {
         }
     }
 
-    private void recieveFiles() {
+    private void receiveFiles() {
         System.out.println("\nRECEIVING FILES/DIRECTORIES");
         long size;
         String name, parentDirectory;
@@ -138,6 +151,25 @@ public class ServerDB {
             e.printStackTrace();
         }
 
+    }
+
+    public void showFiles() {
+        try {
+            ServerSocket s1 = new ServerSocket(port + 1); //Client connects to new Server Socket
+            Socket cl1 = s1.accept();
+            ObjectOutputStream ous = new ObjectOutputStream(cl1.getOutputStream()); //ObjectOutputStream is created
+            ous.writeObject(paths); // We send paths to all files and directories to the client
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendFiles() {
+        try {
+            String path = disFromCl.readUTF();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
