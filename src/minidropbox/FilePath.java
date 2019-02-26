@@ -9,12 +9,11 @@ import javafx.util.Pair;
  * @author elpat
  */
 public class FilePath implements Serializable {
-
+    
+    public ArrayList<Pair<String, String>> paths;
     public FilePath() {
         paths = new ArrayList<Pair<String, String>>();
     }
-
-    public ArrayList<Pair<String, String>> paths;
 
     public ArrayList<Pair<String, String>> getPaths() {
         return paths;

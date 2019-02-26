@@ -7,7 +7,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Random;
+import javafx.util.Pair;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  *
@@ -28,7 +32,7 @@ public class ClientDB {
     public ClientDB() {
         try {
             host = "127.0.0.1";
-            port = 9999;
+            port = 1234;
             dosToServer = null;
             disFromServer = null;
             dosToFile = null;
@@ -119,7 +123,8 @@ public class ClientDB {
         }
     }
 
-    public void showFiles() {
+    public TreeFiles showFiles() {
+        TreeFiles tf1 = null;
         try {
             s = new Socket(host, port);
             dosToServer = new DataOutputStream(s.getOutputStream());
@@ -128,27 +133,60 @@ public class ClientDB {
             ObjectInputStream ois = new ObjectInputStream(s1.getInputStream());
             fp = (FilePath) ois.readObject();
             System.out.println("Objeto recibido: " + fp.toString());
+            ArrayList <Pair<String, String>> arr1 = fp.getPaths();
+            
+            tf1 = new TreeFiles();
+            for(Pair <String, String> it: arr1) {
+                tf1.createNode(it.getKey(), it.getValue());
+               //System.out.println(it.getKey() + " "+it.getValue());
+                //for(String sp: it.getKey().split("/"))
+                    //System.out.println("" + sp);
+            }
+            tf1.insertNodesToTree();
+            
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return tf1;
     }
 
     /**
      * provisional, aqui deberia recibir el nombre del archivo que selecciona de
      * la GUI, pero eso aun no esta por el momento eligire un archivo random
      */
-    public void download() {
+    public void download(String path) {
         try {
             s = new Socket(host, port);
-
-            receiveFiles();
+            disFromServer = new DataInputStream(s.getInputStream());
+            dosToServer = new DataOutputStream(s.getOutputStream());
+            dosToFile = new DataOutputStream((new FileOutputStream("C:\\Users\\Carlo\\Desktop\\myJar.jar")));
+            dosToServer.writeInt(2);
+            
+            dosToServer.writeUTF(path);
+            long r = 0;
+            int n = 0, percent = 0;
+            long size = disFromServer.readLong();
+            String name = disFromServer.readUTF();
+            while (r < size) {
+                byte[] b = new byte[1500];
+                n = disFromServer.read(b);
+                dosToFile.write(b, 0, n);
+                dosToFile.flush();
+                r += n;
+                percent = (int) ((r * 100) / size);
+                System.out.print("\rRECEIVING: " + percent + "%");
+            }
+            dosToFile.close();
+            disFromServer.close();
+            
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void receiveFiles() {
+    public void receiveFiles() {
 
         System.out.println("\nRECEIVING FILES/DIRECTORIES");
         long size;
