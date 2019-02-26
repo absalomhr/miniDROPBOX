@@ -155,12 +155,13 @@ public class ClientDB {
      * provisional, aqui deberia recibir el nombre del archivo que selecciona de
      * la GUI, pero eso aun no esta por el momento eligire un archivo random
      */
-    public void download(String path) {
+    public void download(String path, String clientRoute) {
         try {
             s = new Socket(host, port);
             disFromServer = new DataInputStream(s.getInputStream());
             dosToServer = new DataOutputStream(s.getOutputStream());
-            dosToFile = new DataOutputStream((new FileOutputStream("C:\\Users\\Carlo\\Desktop\\myJar.jar")));
+            
+            dosToFile = new DataOutputStream((new FileOutputStream(clientRoute + "\\myJar.jar")));
             dosToServer.writeInt(2);
             
             dosToServer.writeUTF(path);

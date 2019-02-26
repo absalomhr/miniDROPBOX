@@ -1,3 +1,4 @@
 *.class
 build/classes/minidropbox/ClienteGUI$1.class
 build/classes/minidropbox/*.class
+/dist/

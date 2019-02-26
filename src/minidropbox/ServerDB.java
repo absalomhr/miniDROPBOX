@@ -176,7 +176,8 @@ public class ServerDB {
             MyJarFile jf = new MyJarFile();
             System.out.println("From here: " + path);
             File [] toBeJared = listFolders(path);
-            File myjar = new File("C:/Users/Carlo/Downloads/myJar.jar");//File myjar = new File("C:/Users/Carlo/Downloads/"+path.split("/")[path.split("/").length-1] +".jar");
+            
+            File myjar = new File(serverRoute+"/myJar.jar");//File myjar = new File("C:/Users/Carlo/Downloads/"+path.split("/")[path.split("/").length-1] +".jar");
             jf.createJarArchive(myjar, toBeJared); //changeFolder
             System.out.println("Jar created sucessfully");
             
@@ -236,6 +237,7 @@ public class ServerDB {
         //list_files = (File[]) al_files.toArray();
         list_files = new File[al_files.size()];
         for(int i = 0; i < al_files.size(); i++) {
+            
             list_files[i] = al_files.get(i);
         }
         return list_files;

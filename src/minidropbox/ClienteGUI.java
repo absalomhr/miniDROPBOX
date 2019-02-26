@@ -12,6 +12,7 @@ import javax.swing.JFileChooser;
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.tree.DefaultMutableTreeNode;
 //probando cambios
 
@@ -91,12 +92,9 @@ public class ClienteGUI extends JFrame implements ActionListener {
         
     }
 
-    public void downloadFiles(String path) {
-        //Choosing client route
-        File f = null;
-
+    public void downloadFiles(String path, String clientRoute) {
         ClientDB c = new ClientDB();
-        c.download(path);
+        c.download(path, clientRoute);
 
     }
 
@@ -111,7 +109,20 @@ public class ClienteGUI extends JFrame implements ActionListener {
         } else if (e.getSource() == btn_show) {
             showFiles();
         } else if (e.getSource() == btn_download) {
-            downloadFiles(path_download);
+            JFileChooser jfc = new JFileChooser();
+            jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            if (jfc.isMultiSelectionEnabled()) {
+                jfc.setMultiSelectionEnabled(false);
+            }
+            int r = jfc.showOpenDialog(null);
+            // Using default myDocuments path
+            String clientRoute = FileSystemView.getFileSystemView().getDefaultDirectory().getPath();
+            if (r == JFileChooser.APPROVE_OPTION) {
+                File file = jfc.getSelectedFile();
+                // Choosing path
+                clientRoute = file.getAbsolutePath();
+            }
+            downloadFiles(path_download, clientRoute);
         }
     }
     private JButton btn_upload;
