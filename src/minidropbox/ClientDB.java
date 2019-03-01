@@ -161,7 +161,7 @@ public class ClientDB {
             disFromServer = new DataInputStream(s.getInputStream());
             dosToServer = new DataOutputStream(s.getOutputStream());
             
-            dosToFile = new DataOutputStream((new FileOutputStream(clientRoute + "\\myJar.jar")));
+            dosToFile = new DataOutputStream((new FileOutputStream(clientRoute + "\\minidropbox.zip")));
             dosToServer.writeInt(2);
             
             dosToServer.writeUTF(path);

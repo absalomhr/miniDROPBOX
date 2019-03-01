@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.ZipOutputStream;
 import javax.swing.JFileChooser;
 
 /**
@@ -87,7 +88,7 @@ public class ServerDB {
         }
     }
 
-    private void receiveFiles() {
+     private void receiveFiles() {
         System.out.println("\nRECEIVING FILES/DIRECTORIES");
         long size;
         String name, parentDirectory;
@@ -173,23 +174,33 @@ public class ServerDB {
             dosToCl = new DataOutputStream(cl.getOutputStream());
             
             String path = disFromCl.readUTF();
-            MyJarFile jf = new MyJarFile();
+            //Compressor jf = new Compressor();
             System.out.println("From here: " + path);
             File [] toBeJared = listFolders(path);
             
-            File myjar = new File(serverRoute+"/myJar.jar");//File myjar = new File("C:/Users/Carlo/Downloads/"+path.split("/")[path.split("/").length-1] +".jar");
-            jf.createJarArchive(myjar, toBeJared); //changeFolder
-            System.out.println("Jar created sucessfully");
+            FileOutputStream myjar = new FileOutputStream(serverRoute+"/myJar.zip");//File myjar = new File("C:/Users/Carlo/Downloads/"+path.split("/")[path.split("/").length-1] +".jar");
+
             
-            //dosToCl.write();
-            long size = myjar.length();
+            /**----------------------**/
+            ZipOutputStream zos = new ZipOutputStream(myjar);
+            
+            
+            Compressor.addDirToZipArchive(zos, new File(path), null);
+            zos.flush();
+            myjar.flush();
+            zos.close();
+            myjar.close();
+            /**----------------------**/
+
+            File zipped = new File(serverRoute+"/myJar.zip");
+            long size = zipped.length();
             dosToCl.writeLong(size);
-            dosToCl.writeUTF("myJar.jar");
+            dosToCl.writeUTF("myJar.zip");
        
             
             long sent = 0;
             int percent = 0, n = 0;
-            DataInputStream disFromFile = new DataInputStream(new FileInputStream(myjar.getAbsolutePath()));
+            DataInputStream disFromFile = new DataInputStream(new FileInputStream(zipped.getAbsolutePath()));
             while (sent < size) {
                 byte[] b = new byte[1500];
                 n = disFromFile.read(b);
