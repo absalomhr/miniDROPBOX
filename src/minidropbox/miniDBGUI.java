@@ -54,6 +54,7 @@ public class miniDBGUI extends javax.swing.JFrame {
                 }   // end for: through each dropped file
             }   // end filesDropped
         }); // end FileDrop.Listener
+        showFiles();
     }
 
     /**
@@ -199,10 +200,11 @@ public class miniDBGUI extends javax.swing.JFrame {
     private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
         fileTextArea.setText("Drop files here...");
     }//GEN-LAST:event_clearButtonActionPerformed
-
-    private void showButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showButtonActionPerformed
+    public void showFiles() {
+        System.out.println("aqui entra");
+        c = new ClientDB();
         TreeFiles mytree = c.showFiles();
-        JTree tree_swing = mytree.getTree();
+        tree_swing = mytree.getTree();
 
         tree_swing.addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
@@ -220,13 +222,25 @@ public class miniDBGUI extends javax.swing.JFrame {
         scrollP.setPreferredSize(new Dimension(300, 230));
         this.setLayout(new FlowLayout());*/
         
-        JScrollPane treeScroll = new JScrollPane();
+        treeScroll = new JScrollPane();
         treeScroll.setViewportView(tree_swing);
+        
         treeScroll.setBounds(219, 100, 433, 172);
         this.add (treeScroll);
         //this.add(tree_swing);
         this.repaint();
-        //tree_swing.setBounds(200, 200, 500, 400);
+        this.validate();
+        
+    }
+    JScrollPane treeScroll;
+    JTree tree_swing;
+    public void clickShow() {
+        this.remove(treeScroll);
+        this.repaint();
+        showFiles();
+    }
+    private void showButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showButtonActionPerformed
+        clickShow();//tree_swing.setBounds(200, 200, 500, 400);
     }//GEN-LAST:event_showButtonActionPerformed
 
     private void downloadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downloadButtonActionPerformed
