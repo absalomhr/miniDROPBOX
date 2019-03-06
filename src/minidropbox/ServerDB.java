@@ -15,6 +15,7 @@ import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipOutputStream;
+import javafx.util.Pair;
 import javax.swing.JFileChooser;
 
 /**
@@ -157,12 +158,36 @@ public class ServerDB {
         }
 
     }
-
+    void findPaths(String start) {
+        File children = new File(start);
+        String type = "";
+        System.err.println(children.toString());
+        if(children.isDirectory())
+            type = "d";
+        else type = "f";
+        paths.paths.add(new Pair<>(children.toString(),type));
+        for(String s: children.list()) {
+            System.err.println(start + OsUtils.getSlash()+s);
+            if(new File(start + OsUtils.getSlash() + s).isDirectory())
+                findPaths(start + OsUtils.getSlash() + s);
+            else
+                paths.paths.add(new Pair<>(start + OsUtils.getSlash() + s, "d"));
+        }
+       // paths.paths.add(new Pair<>(start + new File(start).list(),"d"));
+    }
+     
     public void showFiles() {
         try {
+            paths.paths = new ArrayList<Pair<String,String>>();
+            
+            findPaths(serverRoute);
+            
+            
             ServerSocket s1 = new ServerSocket(port + 1); //Client connects to new Server Socket
             Socket cl1 = s1.accept();
             ObjectOutputStream ous = new ObjectOutputStream(cl1.getOutputStream()); //ObjectOutputStream is created
+            s1.close();
+
             ous.writeObject(paths); // We send paths to all files and directories to the client
         } catch (Exception e) {
             e.printStackTrace();
