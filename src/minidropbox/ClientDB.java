@@ -124,9 +124,14 @@ public class ClientDB {
     }
 
     public TreeFiles showFiles() {
+
+        System.out.println("hola1");
         TreeFiles tf1 = null;
+        System.out.println("hola");
         try {
+            System.out.println("entra");
             s = new Socket(host, port);
+            System.out.println("sale");
             dosToServer = new DataOutputStream(s.getOutputStream());
             dosToServer.writeInt(3);
             Socket s1 = new Socket(host, port + 1);
@@ -138,12 +143,16 @@ public class ClientDB {
             tf1 = new TreeFiles();
             for(Pair <String, String> it: arr1) {
                 tf1.createNode(it.getKey(), it.getValue());
-               //System.out.println(it.getKey() + " "+it.getValue());
+                System.out.println(it.getKey() + " "+it.getValue());
                 //for(String sp: it.getKey().split("/"))
                     //System.out.println("" + sp);
             }
             tf1.insertNodesToTree();
+            dosToServer.close();
             
+            s.close();
+            ois.close();
+            s1.close();
             
         } catch (Exception e) {
             e.printStackTrace();
